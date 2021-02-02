@@ -1,39 +1,39 @@
 package com.example.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "courses")
-public class Courses {
+@Table(name="student")
+public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long studentId;
 
     @Column
-    @NotNull
-    private String courseName;
-    @Column
-    private String facultyName;
-    @Column
-    private String department;
-    @Column
-    private String courseCode;
+    private String studentName;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "student_id",nullable = false)
-    private Student student;
+    @Column
+    private String email;
+
+    @Column
+    private String password;
+
+
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Courses> courses;
 
 
 }

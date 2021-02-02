@@ -2,8 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Courses;
+import com.example.demo.model.Student;
 import com.example.demo.repository.CourseRepository;
+import com.example.demo.repository.StudentRepository;
 import com.example.demo.service.CourseService;
+import com.example.demo.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,36 +16,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/course")
 public class CourseController {
 
     @Autowired
-    private CourseRepository courseRepository;
+    CourseRepository courseRepository;
 
     @Autowired
     CourseService courseService;
 
-    @GetMapping("/course")
+    @Autowired
+    StudentService studentService;
+
+    @GetMapping
     public List<Courses> getAllCourses(){
-        return this.courseService.findAll();
+        return courseService.findAll();
     }
 
-    @GetMapping("/course/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Courses> getCourseById(@PathVariable(value = "id") long courseId)
         throws ResourceNotFoundException {
         Courses courses = courseService.findById(courseId);
         return ResponseEntity.ok().body(courses);
     }
 
-    @PostMapping("/course")
+    @PostMapping
     public Courses addCourse(@RequestBody Courses courses){
         return this.courseRepository.save(courses);
     }
 
-    @PutMapping("/course/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Courses> updateCourse(@PathVariable(value = "id") long courseId ,
-                                                @Validated @RequestBody Courses courseDetails) throws ResourceNotFoundException{
+                                                @RequestBody Courses courseDetails) throws ResourceNotFoundException{
 
         Courses courses = courseService.findById(courseId);
         courses.setCourseName(courseDetails.getCourseName());
@@ -54,14 +61,14 @@ public class CourseController {
 
     }
 
-    @DeleteMapping("/course/{id}")
-    public Map<String,Boolean> deleteCourse(@PathVariable(value = "id") long courseId)throws ResourceNotFoundException {
-        Courses courses = courseService.findById(courseId);
-        this.courseRepository.delete(courses);
-        Map<String,Boolean> response= new HashMap<>();
-        response.put("deleted",Boolean.TRUE);
-        return response;
+    @DeleteMapping("/{id}")
+    public String deleteCourse(@PathVariable(value = "id") long courseId)throws ResourceNotFoundException {
+        courseService.deleteById(courseId);
+        return "Course Deleted";
     }
 
-    
+    @GetMapping("/students/{studentId}")
+    public List<Courses> getCourseByStudentId(@PathVariable(value = "studentId") Long studentId){
+        return courseService.findByStudentId(studentId);
+    }
 }

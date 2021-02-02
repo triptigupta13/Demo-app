@@ -23,13 +23,18 @@ public class CourseService {
         return courses;
     }
 
-    public Courses findById(long courseId){
+    public Courses findById(Long courseId){
         Courses courses = courseRepository.findById(courseId).orElse(null);
         return courses;
     }
 
-    public void deleteById(long courseId){
+    public void deleteById(Long courseId){
         courseRepository.deleteById(courseId);
     }
 
+    public List<Courses> findByStudentId(long studentId){
+        List<Courses> courses;
+        courses= courseRepository.findByStudentId(studentId);
+        return courses;
+    }
 }
